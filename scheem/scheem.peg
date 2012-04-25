@@ -1,0 +1,17 @@
+start =
+    a:expression
+    { console.log(a); return a;}
+
+expression = atom / expressionList
+
+expressionList = "(" a:expression b:whitespace_expression* ")"
+  { return [a].concat(b); }
+
+whitespace_expression = " " a:expression {return a;}
+
+validchar
+    = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+
+atom =
+    chars:validchar+
+        { return chars.join(""); }
