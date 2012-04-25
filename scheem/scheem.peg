@@ -4,14 +4,21 @@ start =
 
 expression = atom / expressionList
 
-expressionList = "(" a:expression b:whitespace_expression* ")"
+expressionList = lbracket  a:expression b:whitespace_expression* rbracket
   { return [a].concat(b); }
 
-whitespace_expression = " " a:expression {return a;}
+lbracket = whitespace* "(" whitespace*
+rbracket = whitespace* ")" whitespace*
+
+whitespace_expression = whitespace* a:expression {return a;}
+
+atom =
+    whitespace* chars:validchar+
+        { return chars.join(""); }
+
+whitespace = whitespace_char+
 
 validchar
     = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
-atom =
-    chars:validchar+
-        { return chars.join(""); }
+whitespace_char = [ \t\r\n] 
