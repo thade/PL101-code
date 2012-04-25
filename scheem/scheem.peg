@@ -1,8 +1,7 @@
 start =
-    a:expression
-    { console.log(a); return a;}
+    expression
 
-expression = atom / expressionList
+expression = atom / expressionList / quote
 
 expressionList = lbracket  a:expression b:whitespace_expression* rbracket
   { return [a].concat(b); }
@@ -16,9 +15,16 @@ atom =
     whitespace* chars:validchar+
         { return chars.join(""); }
 
-whitespace = whitespace_char+
+whitespace = comment* whitespace_char+ comment*
+
+quote = whitespace* "'" exp:expression
+      { return ["quote", exp] ; }
+
+comment = ";;" [^\n]*
 
 validchar
     = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
-whitespace_char = [ \t\r\n] 
+whitespace_char = [ \t] / newline
+
+newline = "\n" / "\r\n"
